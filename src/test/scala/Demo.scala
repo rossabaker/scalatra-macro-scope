@@ -3,17 +3,17 @@ import concurrent.Future
 object Demo extends App {
   object OldScalatraApp extends OldScalatra {
     get("/dummy") {
-//      Future {
+      Future {
         println(s"old request  = ${request}")
-//      }
+      }
     }
   }
 
   object NewScalatraApp extends NewScalatra {
     get("/dummy") {
-//      Future {
+      Future {
         println(s"new request  = ${request}")
-//      }
+      }
     }
   }
 

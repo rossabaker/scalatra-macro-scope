@@ -55,20 +55,23 @@ object NewScalatra {
     val RequestTerm = stringToTermName("request")
     val ResponseTerm = stringToTermName("response")
 
-    val newAction: c.Tree = new Transformer {
+    val transformer = new Transformer {
       override def transform(tree: c.Tree) = tree match {
         // TODO make sure first part of this comes from "this"
         case s @ Select(_, RequestTerm) => Ident(newTermName("request"))
         case s @ Select(_, ResponseTerm) => Ident(newTermName("response"))
         case t => super.transform(t)
       }
-    }.transform(action.tree)
+    }
+    def rewrite(tree: Tree) = c.Expr[Any](c.resetLocalAttrs(transformer.transform(tree)))
 
     val oldAct = reify { route = (request: Request, response: Response) => action.splice }
-    val newAct = reify { route = (request: Request, response: Response) => c.Expr[Any](newAction).splice }
+    val newAct = reify { route = (request: Request, response: Response) => rewrite(action.tree).splice }
 
+    /*
     println("ORIGINAL  ACTION = "+show(oldAct))
     println("REWRITTEN ACTION = "+show(newAct))
+    */
 
     newAct
   }
