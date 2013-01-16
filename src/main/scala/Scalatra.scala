@@ -35,10 +35,14 @@ trait OldScalatra extends Scalatra {
 }
 
 trait NewScalatra extends Scalatra {
-  protected def request:  Request  = ???
-  protected def response: Response = ???
+  protected implicit def request:  Request  = ???
+  protected implicit def response: Response = ???
 
   def get(path: String)(action: Any) = macro NewScalatra.getImpl
+
+  def contentTypeUnsafe = request
+
+  def contentTypeSafe(implicit request: Request) = request.contentType
 
   def handle(req: Request, res: Response) {
     NewScalatra.route(req, res)
@@ -65,14 +69,10 @@ object NewScalatra {
     }
     def rewrite(tree: Tree) = c.Expr[Any](c.resetLocalAttrs(transformer.transform(tree)))
 
-    val oldAct = reify { route = (request: Request, response: Response) => action.splice }
-    val newAct = reify { route = (request: Request, response: Response) => rewrite(action.tree).splice }
-
-    /*
-    println("ORIGINAL  ACTION = "+show(oldAct))
-    println("REWRITTEN ACTION = "+show(newAct))
-    */
-
-    newAct
+    val newExpr = reify { route = {
+      (request: Request, response: Response) => rewrite(action.tree).splice
+    }}
+    println("NEW EXPR = "+showRaw(newExpr.tree))
+    newExpr
   }
 }

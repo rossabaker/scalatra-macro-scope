@@ -13,6 +13,13 @@ object Demo extends App {
     get("/dummy") {
       Future {
         println(s"new request  = ${request}")
+        try {
+          println(s"unsafe content type = ${contentTypeUnsafe}")
+        }
+        catch {
+          case e: Throwable => println("Error: "+e.getMessage)
+        }
+        println(s"content type = ${contentTypeSafe}")
       }
     }
   }
