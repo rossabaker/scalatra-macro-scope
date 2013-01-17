@@ -1,4 +1,0 @@
-/**
- * @author ross
- */
-class Response

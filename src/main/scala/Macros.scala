@@ -1,3 +1,5 @@
+package macrospike
+
 import reflect.macros.Context
 
 /**
@@ -9,7 +11,6 @@ object Macros {
 
   def requestImpl(c: Context): c.Expr[Request] = {
     import c.universe._
-    c.warning(c.macroApplication.pos, "Invalid request access")
     reify { Macros.dummyRequest }
   }
 
@@ -40,3 +41,8 @@ object Macros {
     newExpr
   }
 }
+
+case class Request(contentType: String)
+
+class Response
+

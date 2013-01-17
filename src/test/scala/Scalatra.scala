@@ -1,3 +1,6 @@
+package macrospike
+
+import annotation.implicitNotFound
 import reflect.macros.Context
 import scala.language.experimental.macros
 
@@ -35,13 +38,11 @@ trait OldScalatra extends Scalatra {
 }
 
 trait NewScalatra extends Scalatra {
-  protected implicit def request: Request  = macro Macros.requestImpl
+  protected implicit def request: Request = macro Macros.requestImpl
 
   def get(path: String)(action: Any) = macro Macros.getImpl
 
-  def contentTypeUnsafe = request
-
-  def contentTypeSafe(implicit request: Request) = request.contentType
+  def contentType(implicit request: Request) = request.contentType
 
   def handle(req: Request, res: Response) {
     Macros.route(req, res)
