@@ -12,11 +12,17 @@ object Demo extends App {
   }
 
   object NewScalatraApp extends NewScalatra {
-    def ct = request.contentType
+
+    def get(int: Int)(action: => Any) {}
+
+    // This shouldn't compile, but does ... we had to hardcode method names
+    get(42)(request)
+
+    // Rightfully does not compile
+    // def ctype = request.contentType
 
     get("/dummy") {
       def foo = request.hashCode()
-
       Future {
         println(s"new request  = ${request}")
         println(s"content type = ${contentType}")

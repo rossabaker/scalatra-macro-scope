@@ -40,7 +40,7 @@ trait OldScalatra extends Scalatra {
 trait NewScalatra extends Scalatra {
   protected implicit def request: Request = macro Macros.requestImpl
 
-  def get(path: String)(action: Any) = macro Macros.getImpl
+  def get(path: String)(action: Any) = macro Macros.addRouteImpl
 
   def contentType(implicit request: Request) = request.contentType
 
